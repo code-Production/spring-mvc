@@ -33,7 +33,7 @@ public class ProductController {
         return "redirect:/index.html";
     }
 
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ResponseBody
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
@@ -45,6 +45,5 @@ public class ProductController {
         System.out.println(id + ":" + delta);
         productService.changeProductPosition(id, delta);
     }
-
 
 }
