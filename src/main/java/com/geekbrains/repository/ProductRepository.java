@@ -1,59 +1,72 @@
 package com.geekbrains.repository;
 
 import com.geekbrains.model.Product;
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.PersistenceContext;
+//import org.springframework.transaction.annotation.Transactional;
+import com.geekbrains.model.ProductDao;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+
 @Repository
-public class ProductRepository {
+public class ProductRepository implements ProductDao {
 
-    private final List<Product> productList;
-    private static long counter = 1L;
+    private SessionFactory sessionFactory;
 
-    public ProductRepository() {
-        productList = new ArrayList<>(Arrays.asList(
-                new Product(counter++, "Milk", 80.0),
-                new Product(counter++, "Bread", 60.0),
-                new Product(counter++, "Eggs", 40.0),
-                new Product(counter++, "Butter", 20.0),
-                new Product(counter++, "Meat", 160.0)
-        ));
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
-    public void addProduct(Product product) {
-        product.setId(counter++);
-        productList.add(product);
-    }
-
-    public Product getProductById(Long id) {
-        return productList.stream().filter(p -> p.getId().equals(id)).findFirst().orElseThrow(RuntimeException::new);
-    }
-
-    public void deleteProduct(Long id) {
-        productList.removeIf(product -> product.getId().equals(id));
-    }
-
-    public List<Product> getProductList() {
-        return productList;
-    }
-
-    public void changeProductPosition(Long id, Integer delta) {
-        int position = 0;
-        for (Product product : productList) {
-            if (product.getId().equals(id)) {
-                System.out.println("pos:" + position);
-                if (position + delta >= 0 && position + delta < productList.size()) {
-                    Collections.swap(productList, position, position + delta);
-                }
-                break;
-            }
-            position++;
+    @Override
+    public Product findById(Long id) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Product product = session.createNamedQuery("Product.findById", Product.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            System.out.println(product);
+            session.getTransaction().commit();
+            return product;
         }
     }
 
-}
+    @Override
+    public List<Product> findAll() {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            List<Product> productList = session.createNamedQuery("Product.findAll", Product.class)
+                    .getResultList();
+            session.getTransaction().commit();
+            return productList;
+        }
+    }
 
+    @Override
+    public void deleteById(Long id) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            session.createQuery("DELETE FROM Product p WHERE p.id = :id")//
+                    .setParameter("id", id)
+                    .executeUpdate();
+            session.getTransaction().commit();
+        }
+    }
+
+    @Override
+    public Product saveOrUpdate(Product product) {
+        try (Session session = sessionFactory.getCurrentSession()) {
+            session.beginTransaction();
+            Product managedProduct = (Product) session.merge(product);
+            session.getTransaction().commit();
+            return managedProduct;
+        }
+    }
+
+
+}
