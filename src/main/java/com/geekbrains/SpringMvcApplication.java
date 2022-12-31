@@ -13,9 +13,9 @@ public class SpringMvcApplication {
 		SpringApplication.run(SpringMvcApplication.class, args);
 	}
 
-	@Bean
-	public SessionFactory getFactory() {
-		return new Configuration().configure("hidden.cfg.xml").buildSessionFactory();
-	}
+//	@Bean
+//	public SessionFactory getFactory() {
+//		return new Configuration().configure("hidden.cfg.xml").buildSessionFactory();
+//	}
 
 }

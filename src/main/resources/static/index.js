@@ -1,19 +1,18 @@
-angular.module('app', []).controller('indexController', function ($scope, $window, $http) {
-   const contextPath = 'http://localhost:8081/products';
+angular.module('app', []).controller('indexController', function ($scope) {
+   const contextPath = 'http://localhost:8081/app';
 
    $scope.loadProducts = function () {
-      $http.get(contextPath + '/show_all')
+      $http.get(contextPath + '/products')
           .then(function (response) {
              $scope.ProductList = response.data;
           });
    };
 
    $scope.deleteProduct = function (productId) {
-       $http.get(contextPath + '/delete/' + productId)
+       $http.get(contextPath + '/products/delete/' + productId)
            .then(function (response) {
                $scope.loadProducts();
            });
-
    };
 
     $scope.loadProducts();

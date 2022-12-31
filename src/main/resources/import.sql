@@ -1,5 +1,14 @@
---drop schema if exists spring_db;
---create schema if not exists spring_db authorization postgres;
+-- drop schema if exists spring_db;
+-- create schema if not exists spring_db authorization postgres;
 drop table if exists spring_db.Products;
+-- drop table if exists spring_db.Customers;
+-- drop table if exists spring_db.Orders;
+set search_path = "spring_db";
 create table spring_db.Products (id bigserial primary key, title varchar(255), price real);
+-- create table spring_db.Customers (id bigserial primary key, name varchar(255));
+-- create table spring_db.Orders (id bigserial primary key, customer_id bigint, product_id bigint, price real, created_at TIMESTAMP);
+-- alter table spring_db.Orders add constraint fk_orders_products foreign key (product_id) references Products(id);
+-- alter table spring_db.Orders add constraint fk_orders_customers foreign key (customer_id) references Customers(id);
 insert into spring_db.Products (title, price) values ('Sugar', 90.0), ('Milk', 70.0), ('Eggs', 80.0), ('Bread', 30.0), ('Sugar', 40.0);
+-- insert into spring_db.Customers (name) values ('Bob'), ('John'), ('Mike'), ('Kate');
+-- insert into spring_db.Orders (customer_id, product_id, price) VALUES (1,1,10), (1,2,20), (2,1,15), (2,2, 25), (3,1,5), (3,2,30), (4,1,0);
