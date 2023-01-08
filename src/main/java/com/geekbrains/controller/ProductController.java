@@ -1,20 +1,14 @@
 package com.geekbrains.controller;
 
 import com.geekbrains.model.Product;
-//import com.geekbrains.repository.ProductRepository;
 import com.geekbrains.service.ProductService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -36,6 +30,11 @@ public class ProductController {
     public RedirectView addNewProduct(@RequestParam String title, @RequestParam Double price) {
         productService.addProduct(title, price);
         return new RedirectView("/app/index.html");
+    }
+
+    @GetMapping("/page")
+    public List<Product> showProductsOnPage(@RequestParam(required = false) Integer number) {
+        return productService.getProductsOnPage(number);
     }
 
     @GetMapping("/{id}")
