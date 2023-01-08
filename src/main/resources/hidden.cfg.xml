@@ -18,6 +18,9 @@
         <property name="format_sql">true</property>
 
         <mapping class="com.geekbrains.model.Product"/>
+        <mapping class="com.geekbrains.model.Customer"/>
+        <mapping class="com.geekbrains.model.Order"/>
+
 
     </session-factory>
 </hibernate-configuration>
