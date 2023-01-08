@@ -7,4 +7,5 @@ public interface ProductDao {
     Product findById(Long id);
     void deleteById(Long id);
     Product saveOrUpdate(Product product);
+//    List<Customer> getCustomerHistory(Long id);
 }

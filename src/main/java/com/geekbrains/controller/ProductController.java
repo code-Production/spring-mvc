@@ -2,16 +2,21 @@ package com.geekbrains.controller;
 
 import com.geekbrains.model.Product;
 //import com.geekbrains.repository.ProductRepository;
-import com.geekbrains.model.ProductDao;
-import com.geekbrains.repository.ProductRepository;
 import com.geekbrains.service.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/products")
 public class ProductController {
 
@@ -22,30 +27,39 @@ public class ProductController {
         this.productService = productService;
     }
 
-
-    @GetMapping("/show_all")
-    @ResponseBody
-    public List<Product> showAllProducts() {
-        return  productService.getAllProducts();
+    @GetMapping
+    public List<Product> showAllProducts(@RequestParam(required = false) Double min, @RequestParam(required = false) Double max) {
+        return productService.getProductsWithinLimits(min, max);
     }
 
-    @PostMapping("/add")
-    public String addProduct(@RequestParam String title, @RequestParam double price) {
+    @PostMapping
+    public RedirectView addNewProduct(@RequestParam String title, @RequestParam Double price) {
         productService.addProduct(title, price);
-        return "redirect:/index.html";
+        return new RedirectView("/app/index.html");
+    }
+
+    @GetMapping("/{id}")
+    public Product showProductById(@PathVariable Long id) {
+        return productService.getProductById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/delete/{id}")
-    @ResponseBody
-    public void deleteProduct(@PathVariable Long id) {
-        productService.deleteProduct(id);
+    public void deleteProductById(@PathVariable Long id) {
+        System.out.println("delete");
+        productService.deleteProductById(id);
     }
 
-
-    @GetMapping("/show/{id}")
-    @ResponseBody
-    public Product showProduct(@PathVariable Long id) {
-        return productService.getProduct(id);
+    @GetMapping("/find")
+    public Product showProductByPrice(@RequestParam Double price) {
+        return productService.getProductByPrice(price)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping("/find/{price}")
+    public List<Product> showProductsByPriceAndSort(@PathVariable Double price) {
+        return productService.getProductsByPriceAndSort(price);
+    }
+
 
 }
