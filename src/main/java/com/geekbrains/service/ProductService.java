@@ -42,7 +42,7 @@ public class ProductService {
     public Page<Product> getFilteredProducts(Double minPrice, Double maxPrice, Integer pageNum) {
 
         Specification<Product> spec = Specification.where(null);
-
+        System.out.println(minPrice + ":" + maxPrice + ":" + pageNum);
         if (minPrice != null) {
             spec = spec.and(ProductSpecifications.priceGreaterOrEqualThan(minPrice));
         }

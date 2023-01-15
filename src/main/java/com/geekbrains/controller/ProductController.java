@@ -2,15 +2,19 @@ package com.geekbrains.controller;
 
 import com.geekbrains.model.Product;
 import com.geekbrains.model.ProductDto;
+import com.geekbrains.repository.ProductErrorResponse;
 import com.geekbrains.service.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -53,6 +57,20 @@ public class ProductController {
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ProductDto updateProduct(@RequestBody ProductDto productDto) {
         return new ProductDto(productService.updateProduct(new Product(productDto)));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ProductErrorResponse> handleException(RuntimeException ex) {
+        ProductErrorResponse response = new ProductErrorResponse();
+        Integer status = Integer.getInteger(ex.getMessage());
+        response.setStatus(status);
+        response.setMessage(ex.getMessage());
+        response.setCreatedAt(LocalDateTime.now());
+        HttpStatus httpStatus = HttpStatus.resolve(status);
+        if (httpStatus == null) {
+            httpStatus = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(response, httpStatus);
     }
 
 }

@@ -2,6 +2,7 @@ package com.geekbrains.model;
 
 //import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,9 +36,9 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-//    @OneToMany(mappedBy = "product")
-//    @Transient
-//    private List<Order> orders;
+    @OneToMany(mappedBy = "product")
+    @JsonBackReference
+    private List<Order> orders;
 
     @Column(name = "created_at")
     @CreationTimestamp
