@@ -2,12 +2,14 @@ package com.geekbrains.service;
 
 import com.geekbrains.model.Product;
 import com.geekbrains.repository.ProductRepository;
+import com.geekbrains.repository.specifications.ProductSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,39 +24,39 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
     public Optional<Product> getProductById(Long id) {
         return productRepository.findById(id);
     }
 
-    public void addProduct(String title, Double price) {
-        productRepository.save(new Product(null, title, price));
+    public Product addProduct(Product product) {
+        product.setId(null);
+        return productRepository.save(product);
     }
 
     public void deleteProductById(Long id) {
         productRepository.deleteById(id);
     }
 
-    public Optional<Product> getProductByPrice(Double price) {
-        return productRepository.findProductByPrice(price);
+//    @EventListener(ApplicationReadyEvent.class)
+
+    public Page<Product> getFilteredProducts(Double minPrice, Double maxPrice, Integer pageNum) {
+
+        Specification<Product> spec = Specification.where(null);
+
+        if (minPrice != null) {
+            spec = spec.and(ProductSpecifications.priceGreaterOrEqualThan(minPrice));
+        }
+        if (maxPrice != null) {
+            spec = spec.and(ProductSpecifications.priceLessOrEqualThan(maxPrice));
+        }
+        if (pageNum == null) {pageNum = 0;}
+
+        Sort sort = Sort.sort(Product.class).by(Product::getTitle).descending();
+
+        return productRepository.findAll(spec, PageRequest.of(pageNum, PAGE_SIZE, sort));
     }
 
-    public List<Product> getProductsByPriceAndSort(Double price) {
-        Sort sort = Sort.sort(Product.class).by(Product::getTitle).ascending();
-        return productRepository.findProductsByPrice(price, sort);
-    }
-
-    public List<Product> getProductsWithinLimits(Double min, Double max) {
-        if (min == null) {min = 0D;}
-        if (max == null) {max = Double.MAX_VALUE;}
-        return productRepository.findProductsWithinLimits(min, max);
-    }
-
-    public List<Product> getProductsOnPage(Integer number) {
-        if (number == null) {number = 0;}
-        return productRepository.findAll(PageRequest.of(number, PAGE_SIZE)).getContent();
+    public Product updateProduct(Product product) {
+        return productRepository.save(product);
     }
 }

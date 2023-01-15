@@ -3,17 +3,18 @@ package com.geekbrains.model;
 //import javax.persistence.*;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@ToString(exclude = "orders")
+//@ToString(exclude = "orders")
 
 @Entity
 @Table(schema = "spring_db", name = "products")
@@ -38,9 +39,21 @@ public class Product {
 //    @Transient
 //    private List<Order> orders;
 
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
     public Product(Long id, String title, Double price) {
         this.id = id;
         this.title = title;
         this.price = price;
     }
+
+    public Product(ProductDto productDto) {
+        this.id = productDto.getId();
+        this.title = productDto.getTitle();
+        this.price = productDto.getPrice();
+        this.createdAt = LocalDateTime.now();
+    }
+
 }
