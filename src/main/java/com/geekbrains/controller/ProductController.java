@@ -62,15 +62,10 @@ public class ProductController {
     @ExceptionHandler
     public ResponseEntity<ProductErrorResponse> handleException(RuntimeException ex) {
         ProductErrorResponse response = new ProductErrorResponse();
-        Integer status = Integer.getInteger(ex.getMessage());
-        response.setStatus(status);
+        response.setStatus(HttpStatus.NOT_FOUND.value());
         response.setMessage(ex.getMessage());
         response.setCreatedAt(LocalDateTime.now());
-        HttpStatus httpStatus = HttpStatus.resolve(status);
-        if (httpStatus == null) {
-            httpStatus = HttpStatus.NOT_FOUND;
-        }
-        return new ResponseEntity<>(response, httpStatus);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 }
