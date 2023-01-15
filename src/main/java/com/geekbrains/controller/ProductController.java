@@ -1,17 +1,24 @@
 package com.geekbrains.controller;
 
 import com.geekbrains.model.Product;
+import com.geekbrains.model.ProductDto;
+import com.geekbrains.repository.ProductErrorResponse;
 import com.geekbrains.service.ProductService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("api/v1/products")
 public class ProductController {
 
     private ProductService productService;
@@ -21,44 +28,44 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping("/{id}")
+    public ProductDto getProductById(@PathVariable Long id) {
+        return productService.getProductById(id)
+                .map(ProductDto::new)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
     @GetMapping
-    public List<Product> showAllProducts(@RequestParam(required = false) Double min, @RequestParam(required = false) Double max) {
-        return productService.getProductsWithinLimits(min, max);
+    public Page<ProductDto> getFilteredProducts(
+            @RequestParam(required = false, name = "min_price") Double minPrice,
+            @RequestParam(required = false, name = "max_price") Double maxPrice,
+            @RequestParam(required = false, name = "page_num") Integer pageNum
+    ){
+        return productService.getFilteredProducts(minPrice, maxPrice, pageNum).map(ProductDto::new);
     }
 
     @PostMapping
-    public RedirectView addNewProduct(@RequestParam String title, @RequestParam Double price) {
-        productService.addProduct(title, price);
-        return new RedirectView("/app/index.html");
+    public ProductDto addProduct(@RequestBody ProductDto productDto) {
+        return new ProductDto(productService.addProduct(new Product(productDto)));
     }
 
-    @GetMapping("/page")
-    public List<Product> showProductsOnPage(@RequestParam(required = false) Integer number) {
-        return productService.getProductsOnPage(number);
-    }
-
-    @GetMapping("/{id}")
-    public Product showProductById(@PathVariable Long id) {
-        return productService.getProductById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    @GetMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteProductById(@PathVariable Long id) {
-        System.out.println("delete");
         productService.deleteProductById(id);
     }
 
-    @GetMapping("/find")
-    public Product showProductByPrice(@RequestParam Double price) {
-        return productService.getProductByPrice(price)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+    public ProductDto updateProduct(@RequestBody ProductDto productDto) {
+        return new ProductDto(productService.updateProduct(new Product(productDto)));
     }
 
-    @GetMapping("/find/{price}")
-    public List<Product> showProductsByPriceAndSort(@PathVariable Double price) {
-        return productService.getProductsByPriceAndSort(price);
+    @ExceptionHandler
+    public ResponseEntity<ProductErrorResponse> handleException(RuntimeException ex) {
+        ProductErrorResponse response = new ProductErrorResponse();
+        response.setStatus(HttpStatus.NOT_FOUND.value());
+        response.setMessage(ex.getMessage());
+        response.setCreatedAt(LocalDateTime.now());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
-
 
 }

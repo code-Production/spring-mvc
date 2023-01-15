@@ -32,28 +32,46 @@
         </table>
         <table>
             <tr>
-                <td>
-                    <button class="btn btn-primary" ng-click="lastPage()">Last</button>
-                    {{pageNumber + 1}}
-                    <button class="btn btn-primary" ng-click="nextPage()">Next</button>
-                </td>
+                <td><button class="btn btn-primary" ng-click="prevPage()" ng-if="!firstPage">Prev</button></td>
+                <td><b>Page: {{pageNumber + 1}}</b></td>
+                <td><button class="btn btn-primary" ng-click="nextPage()" ng-if="!lastPage">Next</button></td>
+
             </tr>
         </table>
         <br>
-        <form action="/app/products" method="post">
-            <h3>Добавить товар:</h3>
-            <table>
-                <tr>
-                    <td><b>Product title:</b></td>
-                    <td><input type="text" name="title"></td>
-                </tr>
-                <tr>
-                    <td><b>Product price:</b></td>
-                    <td><input type="number" name="price"></td>
-                </tr>
-            </table>
+        <form novalidate ng-submit="addProduct()">
+            <h3>Add new product:</h3>
+            <input class="form-control" type="text" placeholder="title"  ng-model="newProduct.title">
+            <p></p>
+            <input class="form-control" type="number" placeholder="price" ng-model="newProduct.price">
+            <p></p>
             <button type="submit">Send</button>
         </form>
+
+        <form novalidate ng-submit="filteredProducts()">
+            <h3>Filters:</h3>
+            <input class="form-control" type="number" placeholder="min price"  ng-model="filter.min_price">
+            <p></p>
+            <input class="form-control" type="number" placeholder="max price" ng-model="filter.max_price">
+            <p></p>
+            <button type="submit">Send</button>
+        </form>
+        <br>
+<!--        <form action="/app/products" method="post">-->
+<!--            <h3>Добавить товар:</h3>-->
+<!--            <table>-->
+<!--                <tr>-->
+<!--                    <td><b>Product title:</b></td>-->
+<!--                    <td><input type="text" name="title"></td>-->
+<!--                </tr>-->
+<!--                <tr>-->
+<!--                    <td><b>Product price:</b></td>-->
+<!--                    <td><input type="number" name="price"></td>-->
+<!--                </tr>-->
+<!--            </table>-->
+<!--            <button type="submit">Send</button>-->
+<!--        </form>-->
+
     </div>
 </body>
 </html>
