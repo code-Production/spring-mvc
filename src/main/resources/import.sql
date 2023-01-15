@@ -10,5 +10,8 @@ create table spring_db.Products (id bigserial primary key, title varchar(255), p
 -- alter table spring_db.Orders add constraint fk_orders_products foreign key (product_id) references Products(id);
 -- alter table spring_db.Orders add constraint fk_orders_customers foreign key (customer_id) references Customers(id);
 insert into spring_db.Products (title, price) values ('Sugar', 90.0), ('Milk', 70.0), ('Eggs', 80.0), ('Bread', 30.0), ('Sugar', 40.0);
+insert into spring_db.Products (title, price) values ('Sugar2', 90.0), ('Milk2', 70.0), ('Eggs2', 80.0), ('Bread2', 30.0), ('Sugar2', 40.0);
+insert into spring_db.Products (title, price) values ('Sugar3', 90.0), ('Milk3', 70.0), ('Eggs3', 80.0), ('Bread3', 30.0), ('Sugar3', 40.0);
+insert into spring_db.Products (title, price) values ('Sugar4', 90.0);
 -- insert into spring_db.Customers (name) values ('Bob'), ('John'), ('Mike'), ('Kate');
 -- insert into spring_db.Orders (customer_id, product_id, price) VALUES (1,1,10), (1,2,20), (2,1,15), (2,2, 25), (3,1,5), (3,2,30), (4,1,0);

@@ -3,6 +3,7 @@ package com.geekbrains.service;
 import com.geekbrains.model.Product;
 import com.geekbrains.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,8 @@ import java.util.Optional;
 
 @Service
 public class ProductService {
+
+    private static final int PAGE_SIZE = 5;
 
     private ProductRepository productRepository;
 
@@ -45,8 +48,13 @@ public class ProductService {
     }
 
     public List<Product> getProductsWithinLimits(Double min, Double max) {
-        if (min == null) {min = 0D;};
-        if (max == null) {max = Double.MAX_VALUE;};
+        if (min == null) {min = 0D;}
+        if (max == null) {max = Double.MAX_VALUE;}
         return productRepository.findProductsWithinLimits(min, max);
+    }
+
+    public List<Product> getProductsOnPage(Integer number) {
+        if (number == null) {number = 0;}
+        return productRepository.findAll(PageRequest.of(number, PAGE_SIZE)).getContent();
     }
 }
