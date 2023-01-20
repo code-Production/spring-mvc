@@ -64,7 +64,8 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
            url: contextPath + '/cart',
            method: 'post',
            params: {
-               id: productId
+               id: productId,
+               amount: num
            }
        }).then(function(response) {
            $scope.CartList = response.data;
