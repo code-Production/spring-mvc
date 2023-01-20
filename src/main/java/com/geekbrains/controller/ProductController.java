@@ -1,21 +1,20 @@
 package com.geekbrains.controller;
 
+import com.geekbrains.mapper.ProductMapper;
+import com.geekbrains.service.CartService;
 import com.geekbrains.model.Product;
 import com.geekbrains.model.ProductDto;
-import com.geekbrains.repository.ProductErrorResponse;
+import com.geekbrains.model.ProductPosition;
 import com.geekbrains.service.ProductService;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.OptionalInt;
 
 @RestController
 @RequestMapping("api/v1/products")
@@ -31,8 +30,11 @@ public class ProductController {
     @GetMapping("/{id}")
     public ProductDto getProductById(@PathVariable Long id) {
         return productService.getProductById(id)
-                .map(ProductDto::new)
+                .map(ProductMapper.MAPPER::toDto)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//        return productService.getProductById(id)
+//                .map(ProductDto::new)
+//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping
@@ -41,12 +43,15 @@ public class ProductController {
             @RequestParam(required = false, name = "max_price") Double maxPrice,
             @RequestParam(required = false, name = "page_num") Integer pageNum
     ){
-        return productService.getFilteredProducts(minPrice, maxPrice, pageNum).map(ProductDto::new);
+        return productService.getFilteredProducts(minPrice, maxPrice, pageNum).map(ProductMapper.MAPPER::toDto);
+//        return productService.getFilteredProducts(minPrice, maxPrice, pageNum).map(ProductDto::new);
     }
 
     @PostMapping
     public ProductDto addProduct(@RequestBody ProductDto productDto) {
-        return new ProductDto(productService.addProduct(new Product(productDto)));
+        Product product = ProductMapper.MAPPER.toEntity(productDto);
+        return ProductMapper.MAPPER.toDto(productService.addProduct(product));
+//        return new ProductDto(productService.addProduct(new Product(productDto)));
     }
 
     @DeleteMapping("/{id}")
@@ -56,16 +61,10 @@ public class ProductController {
 
     @PutMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
     public ProductDto updateProduct(@RequestBody ProductDto productDto) {
-        return new ProductDto(productService.updateProduct(new Product(productDto)));
+        Product product = ProductMapper.MAPPER.toEntity(productDto);
+        return ProductMapper.MAPPER.toDto(productService.updateProduct(product));
+//        return new ProductDto(productService.updateProduct(new Product(productDto)));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ProductErrorResponse> handleException(RuntimeException ex) {
-        ProductErrorResponse response = new ProductErrorResponse();
-        response.setStatus(HttpStatus.NOT_FOUND.value());
-        response.setMessage(ex.getMessage());
-        response.setCreatedAt(LocalDateTime.now());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
 
 }

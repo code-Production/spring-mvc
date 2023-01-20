@@ -2,11 +2,9 @@ package com.geekbrains.model;
 
 //import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,25 +34,24 @@ public class Product {
     @Column(name = "price")
     private Double price;
 
-    @OneToMany(mappedBy = "product")
-    @JsonBackReference
-    private List<Order> orders;
+//    @OneToMany(mappedBy = "product")
+//    @Transient
+//    private List<Order> orders;
 
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    public Product(Long id, String title, Double price) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-    }
-
-    public Product(ProductDto productDto) {
-        this.id = productDto.getId();
-        this.title = productDto.getTitle();
-        this.price = productDto.getPrice();
-        this.createdAt = LocalDateTime.now();
-    }
+//    public Product(Long id, String title, Double price) {
+//        this.id = id;
+//        this.title = title;
+//        this.price = price;
+//    }
+//
+//    public Product(ProductDto productDto) {
+//        this.id = productDto.getId();
+//        this.title = productDto.getTitle();
+//        this.price = productDto.getPrice();
+//    }
 
 }
