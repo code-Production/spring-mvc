@@ -25,6 +25,7 @@
                 <td>{{p.title}}</td>
                 <td>{{p.price}}</td>
                 <td>
+                    <button class="btn btn-primary" ng-click="addToCart(p.id, 1)">to Cart</button>
                     <button class="btn btn-danger" ng-click="deleteProduct(p.id)">Delete</button>
                 </td>
             </tr>
@@ -35,7 +36,6 @@
                 <td><button class="btn btn-primary" ng-click="prevPage()" ng-if="!firstPage">Prev</button></td>
                 <td><b>Page: {{pageNumber + 1}}</b></td>
                 <td><button class="btn btn-primary" ng-click="nextPage()" ng-if="!lastPage">Next</button></td>
-
             </tr>
         </table>
         <br>
@@ -57,6 +57,36 @@
             <button type="submit">Send</button>
         </form>
         <br>
+        <h3>Корзина:</h3>
+        <table class="table table-hover">
+            <tr>
+                <td><b>Id:</b></td>
+                <td><b>Title:</b></td>
+                <td><b>Price:</b></td>
+                <td><b>ProductId:</b></td>
+                <td><b>Amount:</b></td>
+                <td><b>Sum:</b></td>
+                <td><b>Actions:</b></td>
+            </tr>
+            <tbody>
+            <tr ng-repeat="c in CartList">
+                <td>{{$index + 1}}</td>
+                <td>{{c.productDto.title}}</td>
+                <td>{{c.productDto.price}}</td>
+                <td>{{c.productDto.id}}</td>
+                <td>
+                    <button class="btn btn-primary" ng-click="deleteFromCart(c.productDto.id, 1)">-</button>
+                    {{c.amount}}
+                    <button class="btn btn-primary" ng-click="addToCart(c.productDto.id, 1)">+</button>
+                </td>
+                <td>{{c.sum}}</td>
+                <td>
+                    <button class="btn btn-danger" ng-click="deleteFromCart(c.productDto.id, null)">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
 <!--        <form action="/app/products" method="post">-->
 <!--            <h3>Добавить товар:</h3>-->
 <!--            <table>-->

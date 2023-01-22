@@ -15,9 +15,9 @@ public class ProductDto {
     private String title;
     private Double price;
 
-    public ProductDto(Product product) {
-        this.id = product.getId();
-        this.title = product.getTitle();
-        this.price = product.getPrice();
-    }
+//    public ProductDto(Product product) {
+//        this.id = product.getId();
+//        this.title = product.getTitle();
+//        this.price = product.getPrice();
+//    }
 }

@@ -1,6 +1,7 @@
 package com.geekbrains.service;
 
 import com.geekbrains.model.Product;
+import com.geekbrains.model.ProductDto;
 import com.geekbrains.repository.ProductRepository;
 import com.geekbrains.repository.specifications.ProductSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ProductService {
     }
 
     public Product addProduct(Product product) {
-        product.setId(null);
+        product.setId(0L);
         return productRepository.save(product);
     }
 
@@ -42,7 +43,7 @@ public class ProductService {
     public Page<Product> getFilteredProducts(Double minPrice, Double maxPrice, Integer pageNum) {
 
         Specification<Product> spec = Specification.where(null);
-        System.out.println(minPrice + ":" + maxPrice + ":" + pageNum);
+
         if (minPrice != null) {
             spec = spec.and(ProductSpecifications.priceGreaterOrEqualThan(minPrice));
         }
