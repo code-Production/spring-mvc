@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <title>Product list</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/app/misc/http_cdn.usebootstrap.com_bootstrap_4.1.3_css_bootstrap.css">
+  <script src="/app/misc/http_ajax.googleapis.com_ajax_libs_jquery_3.1.1_jquery.js"></script>
+</head>
+<body>
+<table sec:authorize="isAuthenticated()">
+  <tr>
+    <td><b>Username:</b></td>
+    <td sec:authentication="principal.username"></td>
+    <td sec:authentication="principal.authorities"></td>
+  </tr>
+</table>
+<table class="table table-hover">
+  <tr>
+    <th>ID:</th>
+    <th>Username:</th>
+    <th>Password:</th>
+    <th>Roles:</th>
+    <th sec:authorize="hasRole('SUPERADMIN')">Actions:</th>
+  </tr>
+  <tr th:each="user : ${userList}">
+    <td><p th:text="${user.id}"/></td>
+    <td><p th:text="${user.username}"/></td>
+    <td><p th:text="${user.password}"/></td>
+    <td >
+      <table>
+        <tr th:each="role : ${user.roles}">
+          <td th:text="${role.name}"></td>
+        </tr>
+      </table>
+    </td>
+    <td sec:authorize="hasRole('SUPERADMIN')">
+      <form th:action="@{'/users/update_form/' + ${user.id}}" method="get">
+        <input type="hidden">
+        <button class="btn btn-primary" type="submit" >Modify</button>
+      </form>
+    </td>
+</table>
+
+<table class="table table-hover" sec:authorize="hasRole('SUPERADMIN')">
+  <tr>
+    <td>
+      <form th:action="@{'/users/add'}" th:object="${newUser}" method="post">
+        <h3>Add new user:</h3>
+        <label>
+          <input class="form-control" type="text" placeholder="username" th:field="*{username}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="text" placeholder="password" th:field="*{password}">
+        </label>
+        <p></p>
+        <div th:each="role : ${roleList}">
+
+          <input type="checkbox"
+                 th:value="${role.id}"
+                 th:text="${role.name}"
+                 th:field="*{roles}">
+        </div>
+        <p></p>
+        <button type="submit">Send</button>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/users/update'}" th:object="${oldUser}" method="post">
+        <h3>Modify user:</h3>
+        <label>
+          <input class="form-control" type="number" placeholder="id" th:field="*{id}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="text" placeholder="username" th:field="*{username}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="text" placeholder="password" th:field="*{password}">
+        </label>
+        <p></p>
+        <div th:each="role : ${roleList}">
+
+          <input type="checkbox"
+                 th:value="${role.id}"
+                 th:text="${role.name}"
+                 th:field="*{roles}">
+        </div>
+        <p></p>
+        <button type="submit">Send</button>
+      </form>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="en">
+<head>
+  <title>Product list</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="/app/misc/http_cdn.usebootstrap.com_bootstrap_4.1.3_css_bootstrap.css">
+  <script src="/app/misc/http_ajax.googleapis.com_ajax_libs_jquery_3.1.1_jquery.js"></script>
+</head>
+<body>
+<table sec:authorize="isAuthenticated()">
+  <tr>
+    <td><b>Username:</b></td>
+    <td sec:authentication="principal.username"></td>
+    <td sec:authentication="principal.authorities"></td>
+  </tr>
+</table>
+<table class="table table-hover">
+  <tr>
+    <th>ID:</th>
+    <th>Title:</th>
+    <th>Price:</th>
+    <th>Actions:</th>
+  </tr>
+  <tr th:each="product : ${productList}">
+    <td><p th:text="${product.id}"/></td>
+    <td><p th:text="${product.title}"/></td>
+    <td><p th:text="${product.price}"/></td>
+    <td>
+      <table>
+        <tr>
+          <td>
+            <form th:action="@{'/products/update_form/' + ${product.id}}" method="get">
+              <input type="hidden">
+              <button class="btn btn-primary" type="submit" >Modify</button>
+            </form>
+          </td>
+          <td>
+            <form th:action="@{'/products/delete/' + ${product.id}}" method="get">
+              <input type="hidden">
+              <button class="btn btn-danger" type="submit" >Delete</button>
+            </form>
+          </td>
+        </tr>
+      </table>
+    </td>
+
+</table>
+<table class="table table-hover">
+  <tr>
+    <td>
+      <form th:action="@{'/products/add'}" th:object="${newProduct}" method="post">
+        <h3>Add new product:</h3>
+        <label>
+          <input class="form-control" type="text" placeholder="title" th:field="*{title}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="number" placeholder="price" th:field="*{price}">
+        </label>
+        <p></p>
+        <button type="submit">Send</button>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/products/update'}" th:object="${oldProduct}" method="post">
+        <h3>Modify product:</h3>
+        <label>
+          <input class="form-control" type="number" placeholder="id" th:field="*{id}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="text" placeholder="title" th:field="*{title}">
+        </label>
+        <p></p>
+        <label>
+          <input class="form-control" type="number" placeholder="price" th:field="*{price}">
+        </label>
+        <p></p>
+        <button type="submit">Send</button>
+      </form>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
