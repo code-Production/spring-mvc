@@ -3,6 +3,7 @@ package com.geekbrains.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +17,12 @@ import java.util.Map;
 @Service
 public class JwtService {
 
+    private JwtProperties jwtProperties;
 
+    @Autowired
+    public void setJwtProperties(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
 
     public String generateToken(UserDetails userDetails) {
         String username = userDetails.getUsername();
@@ -29,8 +35,8 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 6000000))
-                .signWith(SignatureAlgorithm.HS256, "98fsd9v0dh23njnN#Nnoj309*(*7y4n")
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getDuration().toMillis()))
+                .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .compact();
     }
 
@@ -48,7 +54,7 @@ public class JwtService {
 
     public Claims parse(String header) {
         return Jwts.parser()
-                .setSigningKey("98fsd9v0dh23njnN#Nnoj309*(*7y4n")
+                .setSigningKey(jwtProperties.getSecret())
                 .parseClaimsJws(header)
                 .getBody();
     }
