@@ -4,7 +4,8 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
    // $scope.newProduct = {title: null, price: null};
    $scope.pageNumber = 0;
-   $scope.positionNum = 0;
+   $scope.token = '';
+   $scope.credentials = {username: 'log', password: 'pass'};
 
    $scope.prevPage = function () {
        $scope.pageNumber--;
@@ -17,19 +18,33 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     }
 
 
-   $scope.deleteProduct = function (productId) {
-       $http.delete(contextPath + '/products/' + productId)
-           .then(function (response) {
-               $scope.filteredProducts();
-           });
-   };
+    $scope.deleteProduct = function (productId) {
+        $http({
+            url: contextPath + '/products/' + productId,
+            method: 'delete',
+            headers: {
+                Content: 'application/json',
+                Authorization: 'Bearer ' + $scope.token
+            }
+        }). then(function (response) {
+            $scope.filteredProducts();
+        });
+    };
 
-   $scope.addProduct = function () {
-       $http.post(contextPath + '/products', $scope.newProduct)
-           .then(function (response) {
-               $scope.filteredProducts();
-           });
-   };
+
+   $scope.addProduct = function() {
+       $http({
+           url: contextPath + '/products',
+           method: 'post',
+           data: $scope.newProduct,
+           headers: {
+               // Content: 'application/json',
+               Authorization: 'Bearer ' + $scope.token
+           }
+       }).then(function(response) {
+           $scope.filteredProducts();
+       })
+   }
 
    $scope.filteredProducts = function () {
        $http({
@@ -39,6 +54,10 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
                min_price: $scope.filter ? $scope.filter.min_price : null,
                max_price: $scope.filter ? $scope.filter.max_price : null,
                page_num: $scope.pageNumber
+           },
+           headers: {
+               // Content: 'application/json',
+               Authorization: 'Bearer ' + $scope.token
            }
        }).then(function (response) {
            $scope.firstPage = response.data.first;
@@ -53,10 +72,16 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
    };
 
    $scope.loadCart = function() {
-       $http.get(contextPath + '/cart')
-           .then(function(response) {
+       $http({
+           url: contextPath + '/cart',
+           method: 'get',
+           headers: {
+               // Content: 'application/json',
+               Authorization: 'Bearer ' + $scope.token
+           }
+       }).then(function(response) {
                $scope.CartList = response.data;
-           });
+       });
    };
 
    $scope.addToCart = function(productId, num) {
@@ -66,6 +91,10 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
            params: {
                id: productId,
                amount: num
+           },
+           headers: {
+               // Content: 'application/json',
+               Authorization: 'Bearer ' + $scope.token
            }
        }).then(function(response) {
            $scope.CartList = response.data;
@@ -80,14 +109,29 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
            params: {
                id: productId,
                amount: num
+           },
+           headers: {
+               // Content: 'application/json',
+               Authorization: 'Bearer ' + $scope.token
            }
        }).then(function(response) {
            $scope.CartList = response.data;
        });
    };
 
-   $scope.filteredProducts();
-   $scope.loadCart();
+   $scope.auth = function() {
+       $http({
+           url: 'http://localhost:8081/app/auth',
+           method: 'POST',
+           data: $scope.credentials,
+       }).then(function (response) {
+           $scope.token = response.data.token;
+           console.log($scope.token);
+           $scope.filteredProducts();
+           $scope.loadCart();
+       });
+   };
 
+   $scope.auth();
 
 });

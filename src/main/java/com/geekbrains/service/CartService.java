@@ -53,6 +53,7 @@ public class CartService {
             ProductDto productDto = ProductMapper.MAPPER.toDto(product);
             list.add(new ProductPosition(productDto, amount, product.getPrice()));
         }
+        
         return list;
     }
 

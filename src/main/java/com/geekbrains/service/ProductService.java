@@ -7,6 +7,7 @@ import com.geekbrains.repository.specifications.ProductSpecifications;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -53,8 +54,8 @@ public class ProductService {
         if (pageNum == null) {pageNum = 0;}
 
         Sort sort = Sort.sort(Product.class).by(Product::getTitle).descending();
-
-        return productRepository.findAll(spec, PageRequest.of(pageNum, PAGE_SIZE, sort));
+//        PageRequest.of(pageNum, PAGE_SIZE, sort)
+        return productRepository.findAll(spec, Pageable.unpaged());
     }
 
     public Product updateProduct(Product product) {
