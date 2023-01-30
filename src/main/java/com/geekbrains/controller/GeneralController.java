@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -29,8 +30,9 @@ public class GeneralController {
     }
 
     @GetMapping("/login")
-    public String getLoginPage() {
-        return "login";
+    public String getLoginPage(Model model) {
+        model.addAttribute("some", "value");
+        return "index";
     }
 
     @PostMapping("/auth")

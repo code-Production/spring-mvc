@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 
 @Entity
-@Table(schema = "spring_db", name = "roles")
+@Table(schema = "spring_shop", name = "roles")
 public class Role {
 
     @Id

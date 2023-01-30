@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -15,6 +16,12 @@ import java.util.Objects;
 public class SimpleAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     private UserService userService;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    public void setBCryptPasswordEncoder(BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -24,8 +31,10 @@ public class SimpleAuthenticationProvider extends AbstractUserDetailsAuthenticat
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
-
-        if (!Objects.equals(userDetails.getPassword(), authentication.getCredentials())) {
+        if (!bCryptPasswordEncoder.matches(
+                authentication.getCredentials().toString(),
+                userDetails.getPassword()
+        )){
             throw new BadCredentialsException("Bad credentials!");
         }
     }

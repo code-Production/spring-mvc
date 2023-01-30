@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 
 @Entity
-@Table(schema = "spring_db", name = "users")
+@Table(schema = "spring_shop", name = "users")
 public class User {
 
     @Id
@@ -27,7 +27,7 @@ public class User {
 
     @ManyToMany
     @JoinTable(
-            schema = "spring_db",
+            schema = "spring_shop",
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")

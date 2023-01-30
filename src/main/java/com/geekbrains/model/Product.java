@@ -16,7 +16,7 @@ import java.util.List;
 //@ToString(exclude = "orders")
 
 @Entity
-@Table(schema = "spring_db", name = "products")
+@Table(schema = "spring_shop", name = "products")
 @NamedQueries({
         @NamedQuery(name = "Product.findById", query = "SELECT p FROM Product AS p WHERE p.id = :id"),
         @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product AS p")
@@ -36,7 +36,7 @@ public class Product {
 
 //    @OneToMany(mappedBy = "product")
 //    @Transient
-//    private List<Order> orders;
+//    private List<Order2> orders;
 
     @Column(name = "created_at")
     @CreationTimestamp
