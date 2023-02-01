@@ -5,6 +5,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
    // $scope.newProduct = {title: null, price: null};
    $scope.pageNumber = 0;
    $scope.token = '';
+   // console.log($scope.token);
    $scope.credentials = {username: 'log', password: 'pass'};
 
    $scope.prevPage = function () {
@@ -123,13 +124,21 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
        $http({
            url: 'http://localhost:8081/app/auth',
            method: 'POST',
-           data: $scope.credentials,
+           data: $scope.credentials
        }).then(function (response) {
            $scope.token = response.data.token;
            console.log($scope.token);
            $scope.filteredProducts();
            $scope.loadCart();
        });
+   };
+
+
+   $scope.saveOrder = function() {
+       $http.get(contextPath + '/cart/order')
+           .then(function(response) {
+               $scope.CartList = null;
+           });
    };
 
    $scope.auth();

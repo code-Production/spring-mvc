@@ -55,7 +55,7 @@ public class ProductService {
 
         Sort sort = Sort.sort(Product.class).by(Product::getTitle).descending();
 //        PageRequest.of(pageNum, PAGE_SIZE, sort)
-        return productRepository.findAll(spec, Pageable.unpaged());
+        return productRepository.findAll(spec, PageRequest.of(pageNum, PAGE_SIZE, sort));
     }
 
     public Product updateProduct(Product product) {

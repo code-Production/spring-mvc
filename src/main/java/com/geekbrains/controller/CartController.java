@@ -1,7 +1,9 @@
 package com.geekbrains.controller;
 
 import com.geekbrains.model.ProductPosition;
+import com.geekbrains.repository.OrderRepository;
 import com.geekbrains.service.CartService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,12 @@ import java.util.List;
 public class CartController {
 
     private CartService cartService;
+    private OrderRepository orderRepository;
+
+    @Autowired
+    public void setOrderRepository(OrderRepository orderRepository) {
+        this.orderRepository = orderRepository;
+    }
 
     @Autowired
     public void setCartService(CartService cartService) {
@@ -38,5 +46,11 @@ public class CartController {
     ){
         return cartService.removeProductPosition(id, amount);
     }
+
+    @GetMapping("/order")
+    public void saveOrder() {
+        cartService.makeOrder();
+    }
+
 
 }
