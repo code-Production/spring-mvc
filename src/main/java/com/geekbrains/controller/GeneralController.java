@@ -1,5 +1,6 @@
 package com.geekbrains.controller;
 
+import com.geekbrains.aspect.Timer;
 import com.geekbrains.model.AuthRequest;
 import com.geekbrains.model.AuthResponse;
 import com.geekbrains.service.JwtService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+@Timer
 @Controller
 public class GeneralController {
 
@@ -31,8 +33,7 @@ public class GeneralController {
 
     @GetMapping("/login")
     public String getLoginPage(Model model) {
-        model.addAttribute("some", "value");
-        return "index";
+        return "redirect:/signin.html";
     }
 
     @PostMapping("/auth")
@@ -45,6 +46,13 @@ public class GeneralController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(userDetails);
         return new AuthResponse(token);
+    }
+
+//    @Timer
+    @GetMapping("/wait")
+    @ResponseBody
+    public void waitRandom() throws InterruptedException {
+        Thread.sleep((long) (Math.random() * 1000));
     }
 
 
