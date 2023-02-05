@@ -1,0 +1,31 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://geekbrains.com/product"
+           targetNamespace="http://geekbrains.com/product">
+        
+    <xs:element name="getProductsByFilterRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="minPrice" type="xs:double" minOccurs="0"/>
+                <xs:element name="maxPrice" type="xs:double" minOccurs="0"/>
+                <xs:element name="pageNum" type="xs:int" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getProductsByFilterResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="productSoap" maxOccurs="unbounded" type="tns:productSoap"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="productSoap">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="title" type="xs:string"/>
+            <xs:element name="price" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

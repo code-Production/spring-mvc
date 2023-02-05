@@ -44,6 +44,8 @@ public class ProductService {
     public Page<Product> getFilteredProducts(Double minPrice, Double maxPrice, Integer pageNum) {
 
         Specification<Product> spec = Specification.where(null);
+        Sort sort = Sort.sort(Product.class).by(Product::getTitle).descending();
+        Pageable pageable;
 
         if (minPrice != null) {
             spec = spec.and(ProductSpecifications.priceGreaterOrEqualThan(minPrice));
@@ -51,11 +53,13 @@ public class ProductService {
         if (maxPrice != null) {
             spec = spec.and(ProductSpecifications.priceLessOrEqualThan(maxPrice));
         }
-        if (pageNum == null) {pageNum = 0;}
+        if (pageNum == null) {
+            pageable = Pageable.unpaged();
+        } else {
+            pageable = PageRequest.of(pageNum, PAGE_SIZE, sort);
+        }
 
-        Sort sort = Sort.sort(Product.class).by(Product::getTitle).descending();
-//        PageRequest.of(pageNum, PAGE_SIZE, sort)
-        return productRepository.findAll(spec, PageRequest.of(pageNum, PAGE_SIZE, sort));
+        return productRepository.findAll(spec, pageable);
     }
 
     public Product updateProduct(Product product) {

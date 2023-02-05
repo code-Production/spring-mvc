@@ -55,5 +55,12 @@ public class GeneralController {
         Thread.sleep((long) (Math.random() * 1000));
     }
 
+    @GetMapping("/wait2")
+    @ResponseBody
+    public void waitRandom2() throws InterruptedException {
+        Thread.sleep((long) (Math.random() * 1000));
+        throw new InterruptedException();
+    }
+
 
 }
