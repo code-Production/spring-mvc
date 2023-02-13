@@ -2,6 +2,7 @@ package com.geekbrains.mapper;
 
 import com.geekbrains.model.Product;
 import com.geekbrains.model.ProductDto;
+import com.geekbrains.soap.product.ProductSoap;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -13,4 +14,6 @@ public interface ProductMapper {
     ProductDto toDto(Product product);
 
     Product toEntity(ProductDto productDto);
+
+    ProductSoap toSoap(Product product);
 }

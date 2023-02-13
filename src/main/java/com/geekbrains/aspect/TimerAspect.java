@@ -29,12 +29,16 @@ public class TimerAspect {
 
     @Around("targetPointcut()")
     public Object aroundAnnotatedMethods(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
         long timer = System.currentTimeMillis();
-        Object result = pjp.proceed();
-        timer = System.currentTimeMillis() - timer;
-        String className = pjp.getTarget().getClass().getName();
-        String methodName = pjp.getSignature().getName();
-        log.debug("{}#{}: {} ms", className, methodName, timer);
+        try {
+            result = pjp.proceed();
+        } finally {
+            timer = System.currentTimeMillis() - timer;
+            String className = pjp.getTarget().getClass().getName();
+            String methodName = pjp.getSignature().getName();
+            log.info("{}#{}: {} ms", className, methodName, timer);
+        }
         return result;
     }
 }
